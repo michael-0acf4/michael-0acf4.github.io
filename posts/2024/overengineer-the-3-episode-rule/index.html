@@ -101,14 +101,14 @@
 		
 
 		<section class="body">
-			<p>As you get older, the number of shows you watch gradually decreases over time. Then, before you realize it, you&rsquo;ve lost the ability to binge-watch multiple seasons in a single day.</p>
-<p>This often happens because, even if a show is good, the same tropes are overused. You&rsquo;ve gained the power to predict what will happen next with a high degree of confidence, which takes away a lot of the fun.</p>
-<p>For example, most shounen tend to follow familiar tropes. To be fair, that&rsquo;s part of what defines the genre, but on average, the execution can become so cliché that it diminishes the enjoyment. These shows often appeal more to a less-experienced audience instead.</p>
+			<p>As you get older, the number of shows you watch slowly decreases over time. Then, before you realize it, you&rsquo;ve lost the ability to binge-watch multiple seasons in a single day.</p>
+<p>This often happens because, even if a show is good, the same tropes are overused. You end up being able to predict what will happen next with a high degree of confidence, which takes away a lot of the fun.</p>
+<p>For example, most shounen tend to follow familiar tropes. To be fair, that&rsquo;s part of what defines the genre, but on average, the execution can become so cliché that it diminishes the enjoyment. These shows often appeal more to a less-experienced audience.</p>
 <h2 id="the-3-episode-rule">The 3 Episode Rule</h2>
-<p>When you start a new anime, give it 3 episodes to grab your attention. The idea is that the first episode might just set the stage or introduce the characters, and it often takes a bit longer for the story to really kick in. If you&rsquo;re still engaged after three episodes, it’s a good sign that the show is worth your time!</p>
+<p>When you start a new anime, you want to give the first 3 episodes a shot. The idea is that the first episode might just set the stage or introduce the characters, and it often takes a bit longer for the story to really kick in. If you&rsquo;re still engaged after three episodes, it’s a good sign that the show is worth your time!</p>
 <p>This seems fair for an unbiased mind right?</p>
 <p>But here’s the thing: humans are social creatures, and most people are influenced by those around them. When a show becomes really popular, you might find yourself trying to enjoy it, even if it doesn’t necessarily match your taste.</p>
-<p>Any show has potential. You might never have watched a romcom, but if you push through a good one, by the fourth episode, you might find yourself slowly getting hooked.</p>
+<p>Any show has potential right? You might never have watched a romcom for example, but as push through a good one, by the fourth episode, you might find yourself slowly getting hooked.</p>
 <p>So, here’s the dilemma we’ll try to solve:</p>
 <blockquote>
 <p>Given a show and the general public’s opinion on it, what should its rating be? Is it worth investing your time in?</p>
@@ -198,15 +198,17 @@ But then you may wonder if it is even possible to minimize the time you wasted o
 <li>$\forall k: 0 \leq  C_k \leq 1$ .</li>
 <li><strong>A not so required requirement.. but is actually nice to have</strong></li>
 </ol>
-<p>Okay, hear me out. How would our rating behave if each rating up to a certain $k$ is the same?
+<p>Ok, hear me out. How would our rating behave if each rating up to a certain $k$ is the same?
 What if $ R_1 = R_2 = &hellip; = R_k = V$? Then it would be nice to have $C_k = V$ where $V$ is an arbitrary constant.
 The main motivation is that if all ratings are the same, then the cumulative rating must hold the same value.</p>
 <h3 id="picking-the-right-weighted-average">Picking the right weighted average</h3>
-<p>The very first episodes are important, so we can rule out the <strong>Harmonic mean</strong> because it tends to give more weight to lower ratings, making it overly sensitive to early episodes with lower values.</p>
-<p>Since our ratings are bounded between 0 and 1, the <strong>Geometric mean</strong> isn&rsquo;t necessary. The Geometric mean is better suited for datasets where values can explode or grow exponentially, which doesn&rsquo;t apply here.</p>
-<p>That leaves us with the <strong>Arithmetic mean</strong>, which provides a balanced average and is well-suited for our bounded rating system:</p>
+<ul>
+<li>The very first episodes are important, so we can rule out the <strong>Harmonic mean</strong> because it tends to give more weight to lower ratings, making it overly sensitive to early episodes with lower weights.</li>
+<li>Our ratings are bounded between 0 and 1, the <strong>Geometric mean</strong> is overkill. It is better suited for datasets where values can explode or grow exponentially, which doesn&rsquo;t apply here.</li>
+<li>The <strong>Arithmetic mean</strong> on the other hand provides a balanced average and is well-suited for our <strong>bounded</strong> rating model, it is also the simplest. So, let&rsquo;s go with that&hellip;</li>
+</ul>
 <p>$$
-\mu(R) = {{\sum_{i=1}^{e} R_i} \over {n}} = {{\sum_{i=1}^{e} R_i \times 1} \over {\sum_{i=1}^{e} 1}}
+\mu(R) = {{\sum_{i=1}^{e} R_i} \over {e}} = {{\sum_{i=1}^{e} R_i \times 1} \over {\sum_{i=1}^{e} 1}}
 \xrightarrow{\text{In weighted form..}}
 C_e := {{\sum_{i=1}^{e} R_i w(i)} \over {\sum_{i=1}^{e} w(i)}}
 $$</p>
@@ -238,13 +240,13 @@ Furthermore, $r(1)$ must be $0$; we have no remainder at the start.</p>
 <p>$$
 w(n) = 1 - \epsilon (e - 1)
 \rightarrow
-\sum_{n=1}^{k} w(n) =  \sum_{n=1}^{k} {1} + \sum_{n=1}^{k} {-\epsilon (k - 1)} = k - \epsilon \sum_{n=1}^{k} {(k - 1)}
+\sum_{i=1}^{k} w(n) =  \sum_{i=1}^{k} {1} + \sum_{i=1}^{k} {-\epsilon (k - 1)} = k - \epsilon \sum_{i=1}^{k} {(k - 1)}
 $$</p>
 <p>$$
-\sum_{n=1}^{k} w(n) = k - \epsilon \sum_{n=1}^{k} {(k - 1)} = k
+\sum_{i=1}^{k} w(n) = k - \epsilon \sum_{i=1}^{k} {(k - 1)} = k
 $$</p>
 <p>$$
--\epsilon \sum_{n=1}^{k} {(k - 1)} = -\epsilon {(k - 1) k \over 2} = 0
+-\epsilon \sum_{i=1}^{k} {(k - 1)} = -\epsilon {(k - 1) k \over 2} = 0
 $$</p>
 <p>Unfortunately, the equation can only hold if $\epsilon = 0$ or $(k - 1) = 0$ or $k = 0$, no luck I guess. $w(k)$ does not also decay to 0 when $k \rightarrow \infty$, it was doomed from the start.</p>
 <p><strong>Exponential decay</strong></p>
@@ -271,7 +273,7 @@ $$</p>
 impossible to reach $k$ if we set $k &gt; 1$: $\sum_i {w(i)} \lt k$.
 <em>(Also remember, if $\lambda$ is too large, the weight will reach 0 REALLY fast, we need some balance!)</em></p>
 <p>We can hack through this by finding an approximation of $\lambda$ which minimizes the difference $k - \sum_i {w(i)}$.</p>
-<p>As $k \rightarrow \infty$, $e^{-\lambda} \le e^{- \lambda (k + 1) } \rightarrow 0$.</p>
+<p>As $k \rightarrow \infty$, $e^{- \lambda (k + 1) } \rightarrow 0 \lt e^{-\lambda}$.</p>
 <p>$$
 {{1 - e^{- \lambda (k + 1) }} \over {1 - e^{-\lambda}}} \approx {{1} \over {1 - e^{-\lambda}}} \lt k
 \rightarrow
@@ -290,8 +292,8 @@ $$</p>
 <p><strong>Logarithmic decay</strong></p>
 <p>Conceptually, it would be something along the lines of $w(x) = 1 / log_2(x + 1)$, the only issue is that it decays much slower at infinity.</p>
 <p>Fortunately, Req. 3 is respected as $\lim_{e \to \infty} w(e) = 0 $.</p>
-<p>Same reasoning as the exponential decay above, you can quickly check that for any $k &gt; 1$, $\sum_{n=i}^{k} w(i) &lt; k$.</p>
-<p>Let&rsquo;s compare how fast it decays to a linear function nonetheless, just to get an idea of how fast it decays.</p>
+<p>Same reasoning as the exponential decay above, you can quickly check that for any $k &gt; 1$, $\sum_{i=1}^{k} w(i) &lt; k$.</p>
+<p>Let&rsquo;s compare how fast it decays compared to a linear function nonetheless, just to get an idea.</p>
 <p>$$
 l(x) = -\alpha x \rightarrow {l&rsquo;(x) = -\alpha} (\alpha &gt; 0)
 $$</p>
@@ -300,7 +302,7 @@ w(x) = {{1} \over {log_2(x + 1)}} \rightarrow {w&rsquo;(x) = -\frac {ln(2)} {(x 
 $$</p>
 <p>$l$ decays at a constant rate, whereas $w$ decays rapidly for smaller values of $x$ (the logarithm in the denominator takes over). As $x$ gets larger, the linear part will dominate and make $w&rsquo;$ smaller, meaning the original $w$ will decay at a slower rate as $x$ grows. It will eventually also reach $0$.</p>
 <h1 id="conclusion">Conclusion</h1>
-<p>If you&rsquo;ve gone through 100 episodes and have a cumulative rating greater than or equal to $0.5$, even if the later episodes were bad, then maybe, overall, you actually liked the show? This is considering we picked a weight function that decays logarithmy reduces as you watch more episodes.</p>
+<p>If you&rsquo;ve gone through 100 episodes and have a cumulative rating greater than or equal to $0.5$, even if the later episodes were bad, then maybe, overall, you actually liked the show? This is considering we picked a weight function that decays logarithmically reduces as you watch more episodes.</p>
 <p>$$ R_e := 0.6 \times W + 0.3 \times S + 0.1 \times P \times \rho + 0.1 \times P \times (1−\rho) $$
 $$ w(e) := 1/log_2(x + 1) $$
 $$ C_e := {{\sum_{i=1}^{e} R_i w(i)} \over {\sum_{i=1}^{e} w(i)}} $$</p>
