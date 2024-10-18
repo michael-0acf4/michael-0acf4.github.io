@@ -119,26 +119,28 @@
 <p>$$ R = f(x_1, x_2, .. ,x_N), x_k \in [0, 1] $$</p>
 <p>That should account for the following points:</p>
 <ol>
-<li>Raw enjoyment (W)</li>
-</ol>
+<li>
+<p>Raw enjoyment (W)</p>
 <blockquote>
 <p>The willingness to continue is very important!</p>
 </blockquote>
-<ol start="2">
-<li>Story/Plot (S):</li>
-</ol>
+</li>
+<li>
+<p>Story/Plot (S):</p>
 <blockquote>
 <p>Important, but not as much as the raw enjoyment.
 (If you are into the <a href="https://en.wikipedia.org/wiki/Slice_of_life">slice-of-life</a> genre for example)</p>
 </blockquote>
-<ol start="3">
-<li>Public opinion (P):</li>
-</ol>
+</li>
+<li>
+<p>Public opinion (P):</p>
 <blockquote>
 <p>Depends on how pertinent it is</p>
 </blockquote>
-<ol start="4">
-<li>Fairness</li>
+</li>
+<li>
+<p>Fairness</p>
+</li>
 </ol>
 <p>I would define fairness with the following scheme:</p>
 <p>For any uniformly distributed $X = ( x_1  x_2 .. x_N)$ where $x_k$ can take any value from $0$ to $1$ then $E[R=f(X)] = 1/2$.</p>
@@ -234,19 +236,19 @@ $$</p>
 $$ 0 \lt w(e) \leq 1 $$
 $$ 0 \lt \sum_{i=1}^{k} w(i) \leq k$$</p>
 <p><strong>Linear decay</strong></p>
-<p>We can rewrite it as $w(1) + r(k) = k$, where $r(k) = -\epsilon \times Stuff (\epsilon &gt; 0)$ is the remaining sum.
+<p>We can rewrite it as $w(1) + r(k) = k$, where $r(k) = -\epsilon \times LinearStuff (\epsilon &gt; 0)$ is the remaining sum.
 Furthermore, $r(1)$ must be $0$; we have no remainder at the start.</p>
 <p>The simplest candidate is $r(k) = -\epsilon (k - 1)$; it easily verifies $r(1) = 0$. Let&rsquo;s find out if such $\epsilon$ exists and if the other properties defined before are valid.</p>
 <p>$$
 w(n) = 1 - \epsilon (e - 1)
 \rightarrow
-\sum_{i=1}^{k} w(n) =  \sum_{i=1}^{k} {1} + \sum_{i=1}^{k} {-\epsilon (k - 1)} = k - \epsilon \sum_{i=1}^{k} {(k - 1)}
+\sum_{i=1}^{k} w(i) =  \sum_{i=1}^{k} {1} + \sum_{i=1}^{k} {-\epsilon (i - 1)} = k - \epsilon \sum_{i=1}^{k} {(i - 1)}
 $$</p>
 <p>$$
-\sum_{i=1}^{k} w(n) = k - \epsilon \sum_{i=1}^{k} {(k - 1)} = k
+\sum_{i=1}^{k} w(i) = k - \epsilon \sum_{i=1}^{k} {(i - 1)} = k
 $$</p>
 <p>$$
--\epsilon \sum_{i=1}^{k} {(k - 1)} = -\epsilon {(k - 1) k \over 2} = 0
+-\epsilon \sum_{i=1}^{k} {(i - 1)} = -\epsilon {(k - 1) k \over 2} = 0
 $$</p>
 <p>Unfortunately, the equation can only hold if $\epsilon = 0$ or $(k - 1) = 0$ or $k = 0$, no luck I guess. $w(k)$ does not also decay to 0 when $k \rightarrow \infty$, it was doomed from the start.</p>
 <p><strong>Exponential decay</strong></p>
@@ -300,7 +302,7 @@ $$</p>
 <p>$$
 w(x) = {{1} \over {log_2(x + 1)}} \rightarrow {w&rsquo;(x) = -\frac {ln(2)} {(x + 1) ln^2(x + 1)}}
 $$</p>
-<p>$l$ decays at a constant rate, whereas $w$ decays rapidly for smaller values of $x$ (the logarithm in the denominator takes over). As $x$ gets larger, the linear part will dominate and make $w&rsquo;$ smaller, meaning the original $w$ will decay at a slower rate as $x$ grows. It will eventually also reach $0$.</p>
+<p>$l$ decays at a constant rate, whereas $w$ decays rapidly for smaller values of $x$ (the logarithm in the denominator takes over). As $x$ gets larger, the linear part will dominate and make $w&rsquo;$ smaller, meaning the original $w$ will decay at a slower rate as $x$ grows. It will eventually also reach $0$. $l(x)$ on the other hand will blow to $-\infty$ as it is constantly going &ldquo;down&rdquo;.</p>
 <h1 id="conclusion">Conclusion</h1>
 <p>If you&rsquo;ve gone through 100 episodes and have a cumulative rating greater than or equal to $0.5$, even if the later episodes were bad, then maybe, overall, you actually liked the show? This is considering we picked a weight function that decays logarithmically reduces as you watch more episodes.</p>
 <p>$$ R_e := 0.6 \times W + 0.3 \times S + 0.1 \times P \times \rho + 0.1 \times P \times (1−\rho) $$
@@ -309,7 +311,7 @@ $$ C_e := {{\sum_{i=1}^{e} R_i w(i)} \over {\sum_{i=1}^{e} w(i)}} $$</p>
 <p>For practical purposes, the recursive form for $C_e$ might be easier to calculate if you do this by hand.
 As you already know the cumulative rating and weight of latest week&rsquo;s episode.</p>
 <p>$$ C_e := {{C_{e-1} {W_{e-1}} + R_e w(e)} \over {W_{e-1} + w(e)}} $$</p>
-<p>Where $W_{e-1}$ represents the cumulative sum from previous week&rsquo;s episode, i.e. $W_{e-1} = {\sum_{i=1}^{e-1} R_i w(i)}$</p>
+<p>Where $W_{e-1}$ represents the cumulative sum from previous week&rsquo;s episode, i.e. $W_{e-1} = {\sum_{i=1}^{e-1} w(i)}$</p>
 
 		</section>
 
