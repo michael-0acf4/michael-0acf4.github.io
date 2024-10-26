@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html><head lang="en">
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Option is a monad - michael-0acf4</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Comprehensive breakdown of defining `Option`" />
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content="https://michael-0acf4.github.io/posts/2024/option-is-a-monad/">
+  <meta property="og:site_name" content="michael-0acf4">
+  <meta property="og:title" content="Option is a monad">
+  <meta property="og:description" content="Comprehensive breakdown of defining `Option`">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-04-14T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-04-14T00:00:00+00:00">
+    <meta property="article:tag" content="Programming">
+    <meta property="article:tag" content="Math">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Option is a monad">
+  <meta name="twitter:description" content="Comprehensive breakdown of defining `Option`">
+<script src="https://michael-0acf4.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://michael-0acf4.github.io/css/fonts.11a1877508139eac0b5b4852ceb110c35641b3533321e66e39149e901ed5756b.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://michael-0acf4.github.io/css/main.c294853c9de072489d7f5c0e91f34d78d7725e079212f21f7329840694379c5d.css" />
+
+	
+	
+		<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+		</script>
+
+		
+		<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+			tex2jax: {
+				inlineMath: [['$','$'], ['\\(','\\)']],
+				displayMath: [['$$','$$'], ['\[','\]']],
+				processEscapes: true,
+				processEnvironments: true,
+				skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+				TeX: { equationNumbers: { autoNumber: "AMS" },
+						 extensions: ["AMSmath.js", "AMSsymbols.js"] }
+			}
+		});
+		</script>
+	
+
+	
+	
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.js"></script>
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+		
+		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+					renderMathInElement(document.body, {
+							delimiters: [
+									{left: "$$", right: "$$", display: true},
+									{left: "$", right: "$", display: false}
+							]
+					});
+			});
+			</script>
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://michael-0acf4.github.io/">michael-0acf4</a>
+	</div>
+	<nav>
+		
+		<a href="/">Home</a>
+		
+		<a href="/posts">Posts</a>
+		
+		<a href="/about">About</a>
+		
+		<a href="/tags">Tags</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">Option is a monad</h1>
+			<div class="meta">Posted on Apr 14, 2024</div>
+		</div>
+		
+
+		
+
+		<section class="body">
+			<p>Let&rsquo;s dive a bit into a little Haskell journey to prove that the well known <code>Option</code> data type, can behave like a Monad, we’ll also see how it relates to a Functor, Applicative, and more.</p>
+<h1 id="what-is-a-monad">What is a monad?</h1>
+<p>For practical purposes, let&rsquo;s just see what it does. Then try to define it later.</p>
+<h2 id="step-1-defining-the-option-type">Step 1: Defining the <code>Option</code> Type</h2>
+<p>To begin, we define our type:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">data</span> <span style="color:#66d9ef">Option</span> a <span style="color:#f92672">=</span> <span style="color:#66d9ef">Some</span> a <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">deriving</span> (<span style="color:#66d9ef">Show</span>, <span style="color:#66d9ef">Eq</span>)
+</span></span></code></pre></div><p>This is a simple &ldquo;optional&rdquo; type. If you’ve worked with <code>Maybe</code>, this will be very familiar. <code>Option</code> can either hold a value (<code>Some a</code>) or be empty (<code>None</code>).</p>
+<p>Now, let&rsquo;s prove how we can make it fit into all these cool Haskell type classes like Functor, Applicative, Monad, and others.</p>
+<h2 id="step-2-option-as-a-functor">Step 2: <code>Option</code> as a functor</h2>
+<p>A Functor is something that you can &ldquo;map&rdquo; over. In Haskell, the fmap function applies a function to the contents of the structure.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> <span style="color:#66d9ef">Functor</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  fmap f (<span style="color:#66d9ef">Some</span> a) <span style="color:#f92672">=</span> <span style="color:#66d9ef">Some</span> (f a)
+</span></span><span style="display:flex;"><span>  fmap <span style="color:#66d9ef">_</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span></code></pre></div><p>Easy enough, right? Here is a concrete example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#a6e22e">fmap</span> (<span style="color:#f92672">+</span><span style="color:#ae81ff">60</span>) (<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span>)  <span style="color:#75715e">-- Output: Some 100</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmap</span> (<span style="color:#f92672">+</span><span style="color:#ae81ff">60</span>) <span style="color:#66d9ef">None</span>       <span style="color:#75715e">-- Output: None</span>
+</span></span></code></pre></div><h2 id="step-3-option-as-an-applicative">Step 3: <code>Option</code> as an Applicative</h2>
+<p>Next, let’s define it as an <code>Applicative</code>. This allows us to apply functions that are themselves inside <code>Option</code>.
+Here’s how we define it:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> <span style="color:#66d9ef">Applicative</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  pure <span style="color:#f92672">=</span> <span style="color:#66d9ef">Some</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">Some</span> f <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#66d9ef">Some</span> a <span style="color:#f92672">=</span> <span style="color:#66d9ef">Some</span> (f a)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">None</span> <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#66d9ef">_</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">_</span> <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span></code></pre></div><ul>
+<li>The <code>pure</code> function takes a value and wraps it in Some.</li>
+<li>The binary operator <code>&lt;*&gt;</code> is for applying functions that are wrapped in <code>Some</code>.</li>
+<li>If either the function or the value is <code>None</code>, the result is <code>None</code>.</li>
+</ul>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">Some</span> (<span style="color:#f92672">+</span><span style="color:#ae81ff">60</span>) <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span>           <span style="color:#75715e">-- Output: Some 100</span>
+</span></span><span style="display:flex;"><span>((<span style="color:#f92672">+</span>) <span style="color:#f92672">&lt;$&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">60</span>) <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span>    <span style="color:#75715e">-- Output: Some 100</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#f92672">+</span>) <span style="color:#f92672">&lt;$&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">60</span> <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span>      <span style="color:#75715e">-- Output: Some 100</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#f92672">+</span>) <span style="color:#f92672">&lt;$&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">60</span> <span style="color:#f92672">&lt;*&gt;</span> <span style="color:#66d9ef">None</span>         <span style="color:#75715e">-- Output: None</span>
+</span></span></code></pre></div><p>This is handy for <strong>combining multiple computations</strong>.</p>
+<h2 id="step-4-option-as-a-semigroup-and-monoid">Step 4: <code>Option</code> as a Semigroup and Monoid</h2>
+<p>Semigroup is about <strong>combining things</strong>. For <code>Option</code>, we define how to combine two Options using the <code>&lt;&gt;</code> operator:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> (<span style="color:#66d9ef">Semigroup</span> a) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">Semigroup</span> (<span style="color:#66d9ef">Option</span> a) <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">Some</span> a <span style="color:#f92672">&lt;&gt;</span> <span style="color:#66d9ef">Some</span> b <span style="color:#f92672">=</span> <span style="color:#66d9ef">Some</span> (a <span style="color:#f92672">&lt;&gt;</span> b)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">None</span> <span style="color:#f92672">&lt;&gt;</span> <span style="color:#66d9ef">_</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">_</span> <span style="color:#f92672">&lt;&gt;</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span></code></pre></div><p>If we have two <code>Some</code> values, we combine them using <code>&lt;&gt;</code> from the underlying type (like combining lists or numbers). If either is <code>None</code>, the result is <code>None</code>.</p>
+<p><code>Monoid</code> extends <code>Semigroup</code> by introducing an <strong>identity</strong> element. Here’s the <code>Monoid</code> instance:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> (<span style="color:#66d9ef">Monoid</span> a) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">Monoid</span> (<span style="color:#66d9ef">Option</span> a) <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  mempty <span style="color:#f92672">=</span> <span style="color:#66d9ef">Some</span> mempty
+</span></span></code></pre></div><p>The <strong>identity</strong> element for <code>Option</code> is <code>Some mempty</code>. If we’re dealing with strings, for example, <code>mempty</code> would be the empty string.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">Some</span> <span style="color:#e6db74">&#34;Hello&#34;</span> <span style="color:#f92672">&lt;&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#e6db74">&#34;World&#34;</span>  <span style="color:#75715e">-- Output: Some &#34;HelloWorld&#34;</span>
+</span></span></code></pre></div><h2 id="step-5-option-as-a-monad">Step 5: <code>Option</code> as a Monad</h2>
+<p>Finally, we reach the <strong>Monad</strong>! A Monad is a structure that <strong>lets you chain computations together</strong>, literally.</p>
+<p>It&rsquo;s just a matter of defining its operators.</p>
+<p>Chaining is done by using the bind operator <code>&gt;&gt;=</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> <span style="color:#66d9ef">Monad</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">None</span> <span style="color:#f92672">&gt;&gt;=</span> <span style="color:#66d9ef">_</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">Some</span> a <span style="color:#f92672">&gt;&gt;=</span> f <span style="color:#f92672">=</span> f a
+</span></span></code></pre></div><p>if <code>Option</code> is <code>None</code>, we stop there. But if it’s <code>Some a</code>, we apply the function <code>f</code> to the value <code>a</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">60</span> <span style="color:#f92672">&gt;&gt;=</span> (<span style="color:#a6e22e">\</span>x <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Some</span> (x <span style="color:#f92672">+</span> <span style="color:#ae81ff">40</span>))  <span style="color:#75715e">-- Output: Some 100</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">None</span> <span style="color:#f92672">&gt;&gt;=</span> (<span style="color:#a6e22e">\</span>x <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Some</span> (x <span style="color:#f92672">+</span> <span style="color:#ae81ff">40</span>))     <span style="color:#75715e">-- Output: None</span>
+</span></span></code></pre></div><p>It also enables the do notation, which makes any Haskell program behave similarly to imperative programs.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#a6e22e">example</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">Int</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">example</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  x <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">Some</span> (x <span style="color:#f92672">+</span> <span style="color:#ae81ff">40</span>)
+</span></span></code></pre></div><p>This is where <code>Option</code> shines as a <code>Monad</code>, as it allows you to <strong>chain computations that might fail</strong>, without <strong>having to check</strong> for <code>None</code> at every step.</p>
+<h2 id="step-6-going-beyond-with-alternative-monadfail-and-monadplus">Step 6: Going beyond with <code>Alternative</code>, <code>MonadFail</code> and <code>MonadPlus</code></h2>
+<p>We can also add some extra powers to <code>Option</code> through <code>Alternative</code>, <code>MonadFail</code> and <code>MonadPlus</code>.</p>
+<p>These give us ways to combine or recover from failures:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> <span style="color:#66d9ef">Alternative</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  empty <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">None</span> <span style="color:#f92672">&lt;|&gt;</span> b <span style="color:#f92672">=</span> b
+</span></span><span style="display:flex;"><span>  a <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#66d9ef">_</span> <span style="color:#f92672">=</span> a
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> <span style="color:#66d9ef">MonadFail</span> <span style="color:#66d9ef">Maybe</span> <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  fail <span style="color:#66d9ef">_</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">Nothing</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> <span style="color:#66d9ef">MonadPlus</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  mzero <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">None</span> `mplus` b <span style="color:#f92672">=</span> b
+</span></span><span style="display:flex;"><span>  a `mplus` <span style="color:#66d9ef">_</span> <span style="color:#f92672">=</span> a
+</span></span></code></pre></div><p>This means that if the first computation fails (<code>None</code>), we can try the second one using <code>&lt;|&gt;</code> or mplus.</p>
+<p>Example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span> <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#66d9ef">None</span>  <span style="color:#75715e">-- Output: Some 40</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">None</span> <span style="color:#f92672">&lt;|&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">60</span>  <span style="color:#75715e">-- Output: Some 60</span>
+</span></span></code></pre></div><p>If you&rsquo;ve looked into parser combinators, there is always an abstraction that implements <code>Alternative</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#75715e">-- Taken from https://github.com/futureg-lab/fg-bytegen/blob/main/src/TextProcessor.hs</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">parseLiteral</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Parser</span> <span style="color:#66d9ef">FgValue</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">parseLiteral</span> <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> underscore <span style="color:#f92672">=</span> char <span style="color:#e6db74">&#39;_&#39;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">in</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>        head <span style="color:#f92672">&lt;-</span> letter <span style="color:#f92672">&lt;|&gt;</span> underscore <span style="color:#75715e">-- !</span>
+</span></span><span style="display:flex;"><span>        tail <span style="color:#f92672">&lt;-</span> many (letter <span style="color:#f92672">&lt;|&gt;</span> digit <span style="color:#f92672">&lt;|&gt;</span> underscore) <span style="color:#75715e">-- !</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> literal <span style="color:#f92672">=</span> head <span style="color:#66d9ef">:</span> tail
+</span></span><span style="display:flex;"><span>        return <span style="color:#f92672">$</span> <span style="color:#66d9ef">case</span> literal <span style="color:#66d9ef">of</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;false&#34;</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Bool</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;true&#34;</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Bool</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;null&#34;</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">NullValue</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">_</span> <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">Literal</span> literal
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- guess what string the above accepts?</span>
+</span></span></code></pre></div><p><code>MonadFail</code> is useful when paired with the <code>do</code> notation..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#a6e22e">exampleWithMonadFail</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">Int</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">exampleWithMonadFail</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>  x <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>  y <span style="color:#f92672">&lt;-</span> fail <span style="color:#e6db74">&#34;Something went wrong!&#34;</span>
+</span></span><span style="display:flex;"><span>  return (x <span style="color:#f92672">+</span> y)  <span style="color:#75715e">-- This won&#39;t be evaluated since y failed</span>
+</span></span></code></pre></div><p><code>MonadPlus</code> can help manage multiple potential failure points in computations, as it allows for a form of &ldquo;fallback&rdquo; behavior, it is quite literally the same as how we defined our <code>Alternative</code> instance if you look closely, so the value is in the semantics. You can refer to <a href="https://en.wikibooks.org/wiki/Haskell/Alternative_and_MonadPlus#:~:text=Its%20definition%20is%20the%20same,()%20respectively.">this</a> for more explanations.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">1</span> `mplus` <span style="color:#66d9ef">None</span> `mplus` <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">3</span>    <span style="color:#75715e">-- Output: Some 1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">None</span> `mplus` <span style="color:#66d9ef">None</span> `mplus` <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">3</span>      <span style="color:#75715e">-- Output: Some 3</span>
+</span></span></code></pre></div><h2 id="step-7-ordering-with-ord">Step 7: Ordering with Ord</h2>
+<p>Finally, we can even sort <code>Option</code> values if the wrapped type supports ordering:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> (<span style="color:#66d9ef">Ord</span> a) <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">Ord</span> (<span style="color:#66d9ef">Option</span> a) <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  compare (<span style="color:#66d9ef">Some</span> a) (<span style="color:#66d9ef">Some</span> b) <span style="color:#f92672">=</span> compare a b
+</span></span><span style="display:flex;"><span>  compare <span style="color:#66d9ef">None</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">EQ</span>
+</span></span><span style="display:flex;"><span>  compare <span style="color:#66d9ef">None</span> (<span style="color:#66d9ef">Some</span> <span style="color:#66d9ef">_</span>) <span style="color:#f92672">=</span> <span style="color:#66d9ef">LT</span>
+</span></span><span style="display:flex;"><span>  compare (<span style="color:#66d9ef">Some</span> <span style="color:#66d9ef">_</span>) <span style="color:#66d9ef">None</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">GT</span>
+</span></span></code></pre></div><p>This defines how <code>Option</code> values compare to each other. If both are None, they’re equal. Otherwise, <code>None</code> is less than any <code>Some value</code>.</p>
+<p>Examples:</p>
+<ol>
+<li></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#a6e22e">compare</span> (<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span>) (<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">30</span>)   <span style="color:#75715e">-- Output: LT</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">compare</span> <span style="color:#66d9ef">None</span> (<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span>)        <span style="color:#75715e">-- Output: LT</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">compare</span> (<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">40</span>) <span style="color:#66d9ef">None</span>        <span style="color:#75715e">-- Output: GT</span>
+</span></span></code></pre></div><ol start="2">
+<li></li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">import</span> Data.List (<span style="color:#a6e22e">sort</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">sort</span> [<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">9</span>, <span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">6</span>]   <span style="color:#75715e">-- Output: [None,Some 6,Some 9]</span>
+</span></span></code></pre></div><h2 id="exercices">Exercices</h2>
+<p>Try to understand why the code bellow evaluates to <code>Some &quot;prefonetwo&quot;</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#a6e22e">example</span> <span style="color:#f92672">::</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">String</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">example</span> <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">let</span> a <span style="color:#f92672">=</span> <span style="color:#66d9ef">Some</span> <span style="color:#e6db74">&#34;pref&#34;</span> <span style="color:#f92672">&lt;&gt;</span> <span style="color:#66d9ef">Some</span> <span style="color:#e6db74">&#34;one&#34;</span>
+</span></span><span style="display:flex;"><span>      b <span style="color:#f92672">=</span> fail <span style="color:#e6db74">&#34;bad&#34;</span> <span style="color:#f92672">&lt;|&gt;</span> mzero <span style="color:#f92672">&lt;|&gt;</span> pure <span style="color:#e6db74">&#34;two&#34;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">in</span> (<span style="color:#f92672">++</span>) <span style="color:#f92672">&lt;$&gt;</span> a <span style="color:#f92672">&lt;*&gt;</span> b
+</span></span></code></pre></div><h2 id="define-monad">Define &ldquo;monad&rdquo;</h2>
+<blockquote>
+<p>&ldquo;In functional programming, a monad is a structure that combines program fragments (functions) and wraps their return values in a type with additional computation&rdquo; - Wikipedia</p>
+</blockquote>
+<blockquote>
+<p>&ldquo;A monad is a monoid in the category of endofunctors&rdquo; - Memes</p>
+</blockquote>
+<blockquote>
+<p>&ldquo;All told, a monad in X is just a monoid in the category of endofunctors of X, with product × replaced by composition of endofunctors and unit set by the identity endofunctor&rdquo; - <a href="https://books.google.pl/books?id=MXboNPdTv7QC&amp;pg=PA138&amp;lpg=PA138&amp;dq=%22monoid+in+the+category+of+endofunctors%22+mac+lane&amp;ots=feQWTkH2Uw&amp;sig=tv-1JwaMOygKGmFE2vM2FhJVS9o&amp;hl=en&amp;ei=5iWsTJCkBIPSsAPQwJ36Aw&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;redir_esc=y#v=onepage&amp;q&amp;f=false">Saunders Mac Lane</a></p>
+</blockquote>
+<p>Formal definitions are nice but if you have carefully followed through, you might have already intuitively made sense of all of the stuff above! Why? Because they are just fancy ways to define &ldquo;trait&quot;s to a type, or implementing &ldquo;interfaces&rdquo; and in our case, these &ldquo;interfaces&rdquo; just so happen to have &ldquo;mathy&rdquo; names and property.</p>
+<p>First, let&rsquo;s translate the terms from Saunders Mac Lane definition (the source of the Monad meme).</p>
+<ol>
+<li>Monoid = structure with binary operation and an identity element.</li>
+<li>Endofunctors = functors from a category to itself.</li>
+<li>The product × = composition of functors.</li>
+<li>The identity set = identity functor.</li>
+</ol>
+<p>Practically speaking you are only required to understand the following:</p>
+<p><strong>Category</strong>: A collection of objects and morphisms (arrows) between them. Arrows link one object to another, and they must follow two rules:</p>
+<ol>
+<li><strong>Composition</strong>: If <code>f: A -&gt; B</code> and <code>g: B -&gt; C</code>, we can compose them to get <code>g ∘ f: A -&gt; C</code>.</li>
+<li><strong>Identity</strong>: Every object has an identity arrow, <code>id_A: A -&gt; A</code>, which acts as a &ldquo;do-nothing&rdquo; arrow.</li>
+</ol>
+<pre tabindex="0"><code>Category := Objects + Arrows between them
+</code></pre><p><strong>Functor</strong>: A mapping between two categories.</p>
+<p>A functor maps:</p>
+<ol>
+<li>Objects in one category to objects in another category.</li>
+<li>Arrows (morphisms) between objects in the first category to arrows between objects in the second category.</li>
+</ol>
+<p>Functors must preserve:</p>
+<ol>
+<li><strong>Identity</strong>: Identity arrows in the first category must map to identity arrows in the second category.</li>
+<li><strong>Composition</strong>: If <code>g ∘ f</code> is a composition of arrows in the first category, then the functor must map this to the composition of the corresponding arrows in the second category.</li>
+</ol>
+<p>For example, you want to double each number. A functor (like the list type) allows you to apply a function to each element without changing the overall structure of the list:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#a6e22e">numbers</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmap</span> (<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>) numbers        <span style="color:#75715e">-- Output: [2, 4, 6]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- With our custom Option</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">fmap</span> (<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>) (<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">11</span>)      <span style="color:#75715e">-- Output: Some 22</span>
+</span></span></code></pre></div><p>So, in a way&hellip;</p>
+<blockquote>
+<p><strong>Monads are basically just a special kind of Functor.</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>Option is a Functor, as it preserves structure, composability of functions (functions can &ldquo;penetrate&rdquo; within it) and maps other categories (data types) to itself.</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>Option is a monad, identity of the wrapped type is preserved as demonstrated with <code>(Some . id) 3 == (id . Some) 3</code>, and composition is defined with the bind function (<code>&gt;&gt;=</code>).</strong></p>
+</blockquote>
+<p>Let&rsquo;s review the Monad definition again..</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">instance</span> <span style="color:#66d9ef">Monad</span> <span style="color:#66d9ef">Option</span> <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">None</span> <span style="color:#f92672">&gt;&gt;=</span> <span style="color:#66d9ef">_</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">Some</span> a <span style="color:#f92672">&gt;&gt;=</span> f <span style="color:#f92672">=</span> f a
+</span></span></code></pre></div><p>And we didn&rsquo;t cover this but in Haskell, the <code>Functor</code> <strong>class</strong> (not to be confused with <strong>instance</strong>) for <code>Monad</code> is defined as</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#66d9ef">Functor</span> m <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>    fmap <span style="color:#f92672">::</span> (a <span style="color:#f92672">-&gt;</span> b) <span style="color:#f92672">-&gt;</span> m a <span style="color:#f92672">-&gt;</span> m b
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#66d9ef">Functor</span> m <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">Monad</span> m <span style="color:#66d9ef">where</span>
+</span></span><span style="display:flex;"><span>    return <span style="color:#f92672">::</span> a <span style="color:#f92672">-&gt;</span> m a
+</span></span><span style="display:flex;"><span>    (<span style="color:#f92672">&gt;&gt;=</span>) <span style="color:#f92672">::</span> m a <span style="color:#f92672">-&gt;</span> (a <span style="color:#f92672">-&gt;</span> m b) <span style="color:#f92672">-&gt;</span> m b
+</span></span></code></pre></div><p>A monad must implement the <code>fmap</code> function from the Functor type class, and it typically does this using the bind operator <code>(&gt;&gt;=)</code> and the return function.</p>
+<p>Another example, List is a <code>Monad</code> in Haskell:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#a6e22e">fmap</span> <span style="color:#f92672">::</span> (a <span style="color:#f92672">-&gt;</span> b) <span style="color:#f92672">-&gt;</span> [a] <span style="color:#f92672">-&gt;</span> [b]
+</span></span></code></pre></div><p>You can also check other implementations, its <code>MonadPlus</code> for example is the &ldquo;same&rdquo; as doing concat <code>&lt;&gt;</code> (from its <code>Semigroup</code> definition) or <code>++</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-haskell" data-lang="haskell"><span style="display:flex;"><span><span style="color:#66d9ef">[]</span> `mplus` [<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>] `mplus` [<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>] `mplus` <span style="color:#66d9ef">[]</span> `mplus` [<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">7</span>]                      <span style="color:#75715e">-- Output: [1,2,3,4,5,6,7]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[]</span> `mplus` [<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">1</span>] `mplus` [[<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">2</span>],<span style="color:#66d9ef">Some</span> <span style="color:#ae81ff">3</span>] `mplus` <span style="color:#66d9ef">[]</span> `mplus` [<span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>]  <span style="color:#75715e">-- Output: [Some 1,Some 2,Some 3,None,None]</span>
+</span></span></code></pre></div>
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/programming">programming</a></li>
+					
+					<li><a href="/tags/math">math</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+		</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/michael-0acf4" rel="me" title="Github"><i data-feather="github"></i></a>
+    <a class="border"></a></div>
+  <div class="footer-info">
+    2024  © michael-0acf4 
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

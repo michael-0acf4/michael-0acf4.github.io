@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Programming on michael-0acf4</title>
+    <link>https://michael-0acf4.github.io/tags/programming/</link>
+    <description>Recent content in Programming on michael-0acf4</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <copyright>© michael-0acf4</copyright>
+    <lastBuildDate>Sun, 14 Apr 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://michael-0acf4.github.io/tags/programming/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Option is a monad</title>
+      <link>https://michael-0acf4.github.io/posts/2024/option-is-a-monad/</link>
+      <pubDate>Sun, 14 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://michael-0acf4.github.io/posts/2024/option-is-a-monad/</guid>
+      <description>&lt;p&gt;Let&amp;rsquo;s dive a bit into a little Haskell journey to prove that the well known &lt;code&gt;Option&lt;/code&gt; data type, can behave like a Monad, we’ll also see how it relates to a Functor, Applicative, and more.&lt;/p&gt;&#xA;&lt;h1 id=&#34;what-is-a-monad&#34;&gt;What is a monad?&lt;/h1&gt;&#xA;&lt;p&gt;For practical purposes, let&amp;rsquo;s just see what it does. Then try to define it later.&lt;/p&gt;&#xA;&lt;h2 id=&#34;step-1-defining-the-option-type&#34;&gt;Step 1: Defining the &lt;code&gt;Option&lt;/code&gt; Type&lt;/h2&gt;&#xA;&lt;p&gt;To begin, we define our type:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-haskell&#34; data-lang=&#34;haskell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;data&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Option&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Some&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;|&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;deriving&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;Show&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;Eq&lt;/span&gt;)&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This is a simple &amp;ldquo;optional&amp;rdquo; type. If you’ve worked with &lt;code&gt;Maybe&lt;/code&gt;, this will be very familiar. &lt;code&gt;Option&lt;/code&gt; can either hold a value (&lt;code&gt;Some a&lt;/code&gt;) or be empty (&lt;code&gt;None&lt;/code&gt;).&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
