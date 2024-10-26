@@ -189,7 +189,7 @@ But then you may wonder if it is even possible to minimize the time you wasted o
 <li>$w(e)$ is the weight for the e-th episode
 <ul>
 <li>$w(1)$ must be $1$, it&rsquo;s always about first impressions.</li>
-<li>$\forall e \in \N*: 0 \lt w(e) \leq 1$.</li>
+<li>$\forall e \in \N*: 0 \lt w(e) \leq 1 \land w(e+\epsilon) \gt w(e) (\epsilon \gt 0) $.</li>
 <li>$\lim_{e \to \infty} w(e) = 0$, the weight must decay to the lower bound as we watch more episodes, i.e. early episodes are the most important.</li>
 </ul>
 </li>
@@ -229,7 +229,7 @@ $$</p>
 <h3 id="picking-a-decent-weight-function">Picking a decent weight function</h3>
 <ol>
 <li>$w(1)$ = $1$</li>
-<li>$\forall e \in \N*: 0 \lt w(e) \leq 1$.</li>
+<li>$\forall e \in \N*: 0 \lt w(e) \leq 1 \land w(e+\epsilon) \gt w(e) (\epsilon \gt 0) $.</li>
 <li>$\lim_{e \to \infty} w(e) = 0$</li>
 </ol>
 <p>From Req. 2,
@@ -289,7 +289,7 @@ $$</p>
 <p>In the 12th episode, we have $\lambda_{12} = 1/12$. The main difference with our initial $\lambda$ is that it is now <strong>a function</strong> and not a constant.</p>
 <p>Finally, we have:</p>
 <p>$$ w(k) = e^{-(1/k) \times (k-1)} = e^{(1 - k)/k}$$</p>
-<p>Sadly, Req. 3 will not work as $\lim_{e \to \infty} w(e) = 1/e \approx 0.36 \neq 0 $. :(</p>
+<p>Sadly, Req. 3 will not work as $\lim_{k \to \infty} w(k) = 1/e \approx 0.36 \neq 0 $. :(</p>
 <p>Let&rsquo;s not continue further with this. The most trivial approach is to pick an arbitrary constant $\lambda$, but it would be really hard to control the decay factor if our assumptions about how many episodes a show might have are incorrect.</p>
 <p><strong>Logarithmic decay</strong></p>
 <p>Conceptually, it would be something along the lines of $w(x) = 1 / log_2(x + 1)$, the only issue is that it decays much slower at infinity.</p>
