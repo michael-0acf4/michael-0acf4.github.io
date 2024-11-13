@@ -22,11 +22,11 @@
 <script src="https://michael-0acf4.github.io/js/feather.min.js"></script>
 	
 	
-        <link href="https://michael-0acf4.github.io/css/fonts.11a1877508139eac0b5b4852ceb110c35641b3533321e66e39149e901ed5756b.css" rel="stylesheet">
+        <link href="https://michael-0acf4.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
 	
 
 	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://michael-0acf4.github.io/css/main.c294853c9de072489d7f5c0e91f34d78d7725e079212f21f7329840694379c5d.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="https://michael-0acf4.github.io/css/main.023e05c04d2e1fee00889a687713f4917a803724e1d52498055d58cffe0aafc9.css" />
 
 	
 	
@@ -163,18 +163,18 @@ E[R] = 0.3 + 0.15 + 0.025 + 0.025 = 0.5 = 1/2
 $</p>
 <p>Good, that means that if you were to randomly assign values to willingness, story quality, pertinence, and public opinion many times, the average of all the ratings you compute would converge around 50%.</p>
 <p>This doesn&rsquo;t mean every rating will be 50%, some ratings will be much higher or lower depending on how those factors vary. However, across all possible scenarios, 50% is the central tendency.</p>
-<p>Armed with this, you can rate any show you watch. If your rating is higher than 0.5, it means you&rsquo;ve enjoyed it overall and should continue.</p>
+<p>Equipped with this, you can rate any show you watch. If your rating is higher than 0.5, it means you&rsquo;ve enjoyed it overall and should continue.</p>
 <p>Personally, I set $P = 1$ and instead use the pertinence $\rho$ as a gradual switch, which can be interpreted as how favorable people are toward the show.</p>
 <p>You can try to check a someone&rsquo;s rating by asking the following questions:</p>
 <ol>
-<li>How much are enjoying it now? ($W$)</li>
+<li>How much are you enjoying it now? ($W$)</li>
 <li>Is the plot good? How predictable do you feel it is? ($S$)</li>
 <li>What do you think others would rate this show? ($P$)</li>
 <li>Do you care/or are you aware of what people think? (e.g. through Social Media, memes, ..)  ($\rho$)</li>
 </ol>
 <h2 id="cumulative-willingness">Cumulative willingness</h2>
 <p>Basically, the formula above is used to rate all 3 episodes at once.<br>
-But then you may wonder if it is even possible to minimize the time you wasted on a show, so you may ask&hellip;</p>
+But then you may wonder if it is even possible to minimize the time you wasted on a show&hellip;</p>
 <blockquote>
 <p>Can I watch fewer than 3 episodes without feeling bad about dropping the show?</p>
 </blockquote>
@@ -304,7 +304,7 @@ w(x) = {{1} \over {log_2(x + 1)}} \rightarrow {w&rsquo;(x) = -\frac {ln(2)} {(x 
 $$</p>
 <p>$l$ decays at a constant rate, whereas $w$ decays rapidly for smaller values of $x$ (the logarithm in the denominator takes over). As $x$ gets larger, the linear part will dominate and make $w&rsquo;$ smaller, meaning the original $w$ will decay at a slower rate as $x$ grows. It will eventually also reach $0$. $l(x)$ on the other hand goes to $-\infty$ as it is constantly going &ldquo;down&rdquo;.</p>
 <h1 id="conclusion">Conclusion</h1>
-<p>If you&rsquo;ve gone through 100 episodes and have a cumulative rating greater than or equal to $0.5$, even if the later episodes were bad, then maybe, overall, you actually liked the show? This is considering we picked a weight function that decays logarithmically reduces as you watch more episodes.</p>
+<p>If you&rsquo;ve gone through 100 episodes and have a cumulative rating greater than or equal to $0.5$, even if the later episodes were bad, then maybe, overall, you actually liked the show? This is considering we picked a weight function that decays logarithmically as you watch more episodes.</p>
 <p>$$ R_e := 0.6 \times W_e + 0.3 \times S_e + 0.1 \times P_e \times \rho_e + 0.1 \times P_e \times (1−\rho_e) $$
 $$ w(e) := 1/log_2(e + 1) $$
 $$ C_e := {{\sum_{i=1}^{e} R_i w(i)} \over {\sum_{i=1}^{e} w(i)}} $$</p>
