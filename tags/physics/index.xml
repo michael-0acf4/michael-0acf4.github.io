@@ -1,20 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Physics on michael-0acf4</title>
-    <link>http://localhost:1313/tags/physics/</link>
-    <description>Recent content in Physics on michael-0acf4</description>
-    <generator>Hugo</generator>
-    <language>en-us</language>
-    <copyright>© michael-0acf4</copyright>
-    <lastBuildDate>Mon, 14 Apr 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/physics/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Why cheap manual treadmills can still be accurate</title>
-      <link>http://localhost:1313/posts/2025/cheap-treadmills-can-be-accurate/</link>
-      <pubDate>Mon, 14 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/2025/cheap-treadmills-can-be-accurate/</guid>
-      <description>&lt;h1 id=&#34;define-cheap&#34;&gt;Define cheap&lt;/h1&gt;&#xA;&lt;p&gt;I would define cheap with the following criteria:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Below average price&lt;/li&gt;&#xA;&lt;li&gt;Purely manual&lt;/li&gt;&#xA;&lt;li&gt;Noticibly inaccurate (but consistent) measurements&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Measuring time shouldn&amp;rsquo;t be a problem, and one can easily assume it is just as accurate as any time measured on an actual watch.&lt;/p&gt;&#xA;&lt;p&gt;How do you know if the measurements are consistent?&lt;/p&gt;&#xA;&lt;p&gt;Everything can be derived from speed and time (calories, total distance).&#xA;If your treadmill is telling you some consistent measurement each time you use it over multiple session, each roughly of the same duration, then even if the measurment is completly inacurate, it should be good enough.&lt;/p&gt;</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Physics on michael-0acf4</title><link>https://michael-0acf4.github.io/tags/physics/</link><description>Recent content in Physics on michael-0acf4</description><generator>Hugo</generator><language>en-us</language><copyright>© michael-0acf4</copyright><lastBuildDate>Mon, 14 Apr 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://michael-0acf4.github.io/tags/physics/index.xml" rel="self" type="application/rss+xml"/><item><title>Why cheap manual treadmills can still be accurate</title><link>https://michael-0acf4.github.io/posts/2025/cheap-treadmills-can-be-accurate/</link><pubDate>Mon, 14 Apr 2025 00:00:00 +0000</pubDate><guid>https://michael-0acf4.github.io/posts/2025/cheap-treadmills-can-be-accurate/</guid><description>&lt;h1 id="define-cheap">Define cheap&lt;/h1>
+&lt;p>I would define cheap with the following criteria:&lt;/p>
+&lt;ul>
+&lt;li>Below average price&lt;/li>
+&lt;li>Purely manual&lt;/li>
+&lt;li>Noticibly inaccurate (but consistent) measurements&lt;/li>
+&lt;/ul>
+&lt;p>Measuring time shouldn&amp;rsquo;t be a problem, and one can easily assume it is just as accurate as any time measured on an actual watch.&lt;/p>
+&lt;p>How do you know if the measurements are consistent?&lt;/p>
+&lt;p>Everything can be derived from speed and time (calories, total distance).
+If your treadmill is telling you some consistent measurement each time you use it over multiple session, each roughly of the same duration, then even if the measurment is completly inacurate, it should be good enough.&lt;/p></description></item></channel></rss>
