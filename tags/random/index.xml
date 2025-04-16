@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Random on michael-0acf4</title>
-    <link>https://michael-0acf4.github.io/tags/random/</link>
+    <link>http://localhost:1313/tags/random/</link>
     <description>Recent content in Random on michael-0acf4</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <copyright>© michael-0acf4</copyright>
     <lastBuildDate>Sun, 06 Oct 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://michael-0acf4.github.io/tags/random/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/random/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Overengineer the 3 Episode Rule</title>
-      <link>https://michael-0acf4.github.io/posts/2024/overengineer-the-3-episode-rule/</link>
+      <title>How (not) to overengineer the 3 Episode Rule</title>
+      <link>http://localhost:1313/posts/2024/overengineer-the-3-episode-rule/</link>
       <pubDate>Sun, 06 Oct 2024 00:00:00 +0000</pubDate>
-      <guid>https://michael-0acf4.github.io/posts/2024/overengineer-the-3-episode-rule/</guid>
+      <guid>http://localhost:1313/posts/2024/overengineer-the-3-episode-rule/</guid>
       <description>&lt;p&gt;As you get older, the number of shows you watch slowly decreases over time. Then, before you realize it, you&amp;rsquo;ve lost the ability to binge-watch multiple seasons in a single day.&lt;/p&gt;&#xA;&lt;p&gt;This often happens because, even if a show is good, the same tropes are overused. You end up being able to predict what will happen next with a high degree of confidence, which takes away a lot of the fun.&lt;/p&gt;</description>
     </item>
   </channel>

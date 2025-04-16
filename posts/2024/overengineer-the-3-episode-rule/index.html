@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html><head lang="en">
+<html><head lang="en"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Overengineer the 3 Episode Rule - michael-0acf4</title><meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="How (not) to overengineer the 3 Episode Rule" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>How (not) to overengineer the 3 Episode Rule - michael-0acf4</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="As you get older, the number of shows you watch slowly decreases over time. Then, before you realize it, you&rsquo;ve lost the ability to binge-watch multiple seasons in a single day.
+This often happens because, even if a show is good, the same tropes are overused. You end up being able to predict what will happen next with a high degree of confidence, which takes away a lot of the fun." />
 	<meta property="og:image" content=""/>
-	<meta property="og:url" content="https://michael-0acf4.github.io/posts/2024/overengineer-the-3-episode-rule/">
+	<meta property="og:url" content="http://localhost:1313/posts/2024/overengineer-the-3-episode-rule/">
   <meta property="og:site_name" content="michael-0acf4">
-  <meta property="og:title" content="Overengineer the 3 Episode Rule">
-  <meta property="og:description" content="How (not) to overengineer the 3 Episode Rule">
+  <meta property="og:title" content="How (not) to overengineer the 3 Episode Rule">
+  <meta property="og:description" content="As you get older, the number of shows you watch slowly decreases over time. Then, before you realize it, you’ve lost the ability to binge-watch multiple seasons in a single day.
+This often happens because, even if a show is good, the same tropes are overused. You end up being able to predict what will happen next with a high degree of confidence, which takes away a lot of the fun.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -17,16 +19,17 @@
     <meta property="article:tag" content="Random">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Overengineer the 3 Episode Rule">
-  <meta name="twitter:description" content="How (not) to overengineer the 3 Episode Rule">
-<script src="https://michael-0acf4.github.io/js/feather.min.js"></script>
+  <meta name="twitter:title" content="How (not) to overengineer the 3 Episode Rule">
+  <meta name="twitter:description" content="As you get older, the number of shows you watch slowly decreases over time. Then, before you realize it, you’ve lost the ability to binge-watch multiple seasons in a single day.
+This often happens because, even if a show is good, the same tropes are overused. You end up being able to predict what will happen next with a high degree of confidence, which takes away a lot of the fun.">
+<script src="http://localhost:1313/js/feather.min.js"></script>
 	
 	
-        <link href="https://michael-0acf4.github.io/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css" rel="stylesheet">
+        <link href="http://localhost:1313/css/fonts.11a1877508139eac0b5b4852ceb110c35641b3533321e66e39149e901ed5756b.css" rel="stylesheet">
 	
 
 	
-	<link rel="stylesheet" type="text/css" media="screen" href="https://michael-0acf4.github.io/css/main.023e05c04d2e1fee00889a687713f4917a803724e1d52498055d58cffe0aafc9.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="http://localhost:1313/css/main.c294853c9de072489d7f5c0e91f34d78d7725e079212f21f7329840694379c5d.css" />
 
 	
 	
@@ -74,7 +77,7 @@
 <body>
         <div class="content"><header>
 	<div class="main">
-		<a href="https://michael-0acf4.github.io/">michael-0acf4</a>
+		<a href="http://localhost:1313/">michael-0acf4</a>
 	</div>
 	<nav>
 		
@@ -93,7 +96,7 @@
 <main>
 	<article>
 		<div class="title">
-			<h1 class="title">Overengineer the 3 Episode Rule</h1>
+			<h1 class="title">How (not) to overengineer the 3 Episode Rule</h1>
 			<div class="meta">Posted on Oct 6, 2024</div>
 		</div>
 		
@@ -312,6 +315,16 @@ $$ C_e := {{\sum_{i=1}^{e} R_i w(i)} \over {\sum_{i=1}^{e} w(i)}} $$</p>
 As you already know the cumulative rating and weight of latest week&rsquo;s episode.</p>
 <p>$$ C_e := {{C_{e-1} {W_{e-1}} + R_e w(e)} \over {W_{e-1} + w(e)}} $$</p>
 <p>Where $W_{e-1}$ represents the cumulative sum from previous week&rsquo;s episode, i.e. $W_{e-1} = {\sum_{i=1}^{e-1} w(i)}$</p>
+<h1 id="additional-notes">Additional notes</h1>
+<p>If you are registered to MAL or similar websites, chances are that you have lots of rating data. To which you can callibrate the above model.</p>
+<p>The simplest approach but less accurate is just to assume $R_{true} = k R$ then fit on your data by finding the appropriate factor $k$.</p>
+<p>The suggested approach is to add extra parameters that will indicate how much you deviate from the model.</p>
+<p>$$ R_{true} = R + R_{dev} $$</p>
+<p>$$ R_{true} = (0.6 + k_1) \times W + (0.3 + k_2) \times S + (0.1 + k_3) \times P \times \rho + (0.1 + k_4) \times P \times (1−\rho)$$</p>
+<p>You can determine $W$, $S$ and $P$ by rating a few shows, just try to be yourself (can be from the same dataset, just remove them afterwards).</p>
+<p>Then you can find $k_1$, $k_2$, $k_3$, and $k_4$ by fitting over your known ratings and minimize the difference between the observed ${\widehat {R}} _ {true}$ and your personal model $R_{true}$. It is a simple linear regression problem after all.</p>
+<p>Just don&rsquo;t forget the constraint $0 \le R \lt 1$.</p>
+<p>Once that&rsquo;s done, you can recompute all of your ratings to be on the same scale as our framework.</p>
 
 		</section>
 
@@ -336,11 +349,9 @@ As you already know the cumulative rating and weight of latest week&rsquo;s epis
   <div style="display:flex"><a class="soc" href="https://github.com/michael-0acf4" rel="me" title="Github"><i data-feather="github"></i></a>
     <a class="border"></a></div>
   <div class="footer-info">
-    2024  © michael-0acf4 
+    2025  © michael-0acf4 
   </div>
 </footer>
-
-
 <script>
   feather.replace()
 </script></div>
